@@ -55,6 +55,6 @@
       "scripts": {
           "dev": "vite",
           "build": "vite build",
-          "deploy": "npm run build && npx wrangler pages deploy ./build"
+          "deploy": "npm run build && npx wrangler pages deploy build --project-name golden-sands --branch main"
       }
   }
