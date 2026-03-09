@@ -1,14 +1,12 @@
 {
   "name": "golden-sands",
   "compatibility_date": "2026-02-05",
-  "assets": {
-    "directory": "./build"
-  },
+  "pages_build_output_dir": "./build",
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "golden-sands-db",
-      "database_id": "<YOUR_DATABASE_ID>"
+      "database_id": "8578b77c-d500-46c7-ae86-0aa3f9fd2cb3"
     }
   ]
 }
