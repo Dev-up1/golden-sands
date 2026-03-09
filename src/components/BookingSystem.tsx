@@ -5,11 +5,12 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Badge } from "./ui/badge";
-import { Calendar, Users, Clock, CreditCard, CheckCircle } from "lucide-react";
+import { Calendar, Users, Clock, CreditCard, CheckCircle, Loader2 } from "lucide-react";
 import { toast } from "sonner@2.0.3";
 
 export function BookingSystem() {
   const [selectedType, setSelectedType] = useState<'room' | 'hall'>('room');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookingData, setBookingData] = useState({
     type: 'room',
     checkIn: '',
@@ -22,9 +23,37 @@ export function BookingSystem() {
     phone: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success('تم إرسال طلب الحجز بنجاح! سنتواصل معكم قريباً');
+    setIsSubmitting(true);
+    try {
+      const res = await fetch('/api/book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...bookingData, type: selectedType }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success('تم إرسال طلب الحجز بنجاح! سنتواصل معكم قريباً');
+        setBookingData({
+          type: 'room',
+          checkIn: '',
+          checkOut: '',
+          guests: '1',
+          roomType: '',
+          hallType: '',
+          name: '',
+          email: '',
+          phone: ''
+        });
+      } else {
+        toast.error(data.error || 'حدث خطأ، يرجى المحاولة مرة أخرى');
+      }
+    } catch {
+      toast.error('تعذر الاتصال بالخادم، يرجى المحاولة لاحقاً');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const roomTypes = [
@@ -283,9 +312,17 @@ export function BookingSystem() {
 
               <Button 
                 type="submit"
-                className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white h-14 rounded-xl text-lg font-medium shadow-lg transform hover:scale-[1.02] transition-all duration-300"
+                disabled={isSubmitting}
+                className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white h-14 rounded-xl text-lg font-medium shadow-lg transform hover:scale-[1.02] transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
-                إرسال طلب الحجز
+                {isSubmitting ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    جاري الإرسال...
+                  </span>
+                ) : (
+                  'إرسال طلب الحجز'
+                )}
               </Button>
             </form>
           </Card>

@@ -3,5 +3,12 @@
   "compatibility_date": "2026-02-05",
   "assets": {
     "directory": "./build"
-  }
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "golden-sands-db",
+      "database_id": "<YOUR_DATABASE_ID>"
+    }
+  ]
 }
